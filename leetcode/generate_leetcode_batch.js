@@ -17,7 +17,7 @@ const start = Number(process.argv[2] || 201);
 const end = Number(process.argv[3] || 300);
 
 if (!Number.isInteger(start) || !Number.isInteger(end) || start > end) {
-  throw new Error("Usage: node leetcode/scripts/generate_leetcode_batch.js 401 1500");
+  throw new Error("Usage: node leetcode/generate_leetcode_batch.js 401 1500");
 }
 
 function pad4(n) {
