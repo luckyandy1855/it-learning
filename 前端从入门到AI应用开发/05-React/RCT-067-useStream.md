@@ -1,0 +1,217 @@
+# useStream（RCT-067）
+
+## 🎯 本节学习目标
+
+- 封装流式读取和增量更新。
+- 理解它在 React 组件、状态或数据流中的位置。
+- 能够把本节知识应用到 AI Chat、Prompt 工具或 Agent 工作台中。
+
+---
+
+## 📖 什么是useStream
+
+useStream 是 React 开发中需要稳定掌握的核心知识点之一。React 的核心思想是用组件描述界面，用状态驱动变化，再通过数据流把复杂界面拆成可维护的小块。
+
+在 AI 应用中，界面变化非常频繁：用户输入 Prompt、切换模型、等待回复、接收流式 token、展示错误、保存历史。useStream 可以帮助我们把这些变化组织成清晰的组件逻辑。
+
+学习本节时，不要只看语法形式，要同时关注它解决了哪个 React 工程问题。
+
+---
+
+## 🧠 原理讲解
+
+React 页面可以理解为“状态到 UI 的映射”：
+
+```text
+状态 state / props / server data
+  ↓
+组件函数执行
+  ↓
+返回 JSX
+  ↓
+React 更新真实 DOM
+```
+
+useStream 的作用，是让这条链路中的某一环更清晰、更可控或更高效。
+
+本节核心写法：
+
+```jsx
+function useStream()
+```
+
+---
+
+## 🏗 基本结构
+
+```jsx
+function ChatPanel() {
+  return (
+    <section>
+      <h1>AI Chat</h1>
+      <p>学习 useStream</p>
+    </section>
+  );
+}
+```
+
+---
+
+## ✅ 完整代码
+
+下面用一个 AI Chat 教学组件演示 useStream 的使用方式：
+
+```jsx
+import { useMemo, useState } from "react";
+
+function MessageList({ messages }) {
+  return (
+    <ul>
+      {messages.map((message) => (
+        <li key={message.id}>
+          <strong>{message.role}：</strong>{message.content}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export default function Demo() {
+  const [prompt, setPrompt] = useState("");
+  const [messages, setMessages] = useState([
+    { id: "m1", role: "assistant", content: "这里演示 useStream。" }
+  ]);
+
+  const summary = useMemo(() => {
+    return `当前共有 ${messages.length} 条消息`;
+  }, [messages]);
+
+  function handleSend() {
+    const text = prompt.trim();
+
+    if (!text) {
+      return;
+    }
+
+    setMessages((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), role: "user", content: text }
+    ]);
+    setPrompt("");
+  }
+
+  return (
+    <section>
+      <h1>useStream</h1>
+      <p>处理 SSE 或 ReadableStream token</p>
+      <p>核心写法：<code>function useStream()</code></p>
+      <MessageList messages={messages} />
+      <textarea
+        value={prompt}
+        onChange={(event) => setPrompt(event.target.value)}
+        placeholder="输入 Prompt"
+      />
+      <button type="button" onClick={handleSend}>发送</button>
+      <small>{summary}</small>
+    </section>
+  );
+}
+```
+
+---
+
+## 🔍 逐行解析
+
+`import { useMemo, useState } from "react";` 引入示例中需要的 React Hook。
+
+`function MessageList({ messages })` 定义消息列表组件，负责展示对话消息。
+
+`messages.map(...)` 把消息数组转换成一组 JSX 列表项。
+
+`const [prompt, setPrompt] = useState("");` 保存输入框中的 Prompt。
+
+`const [messages, setMessages] = useState(...)` 保存当前对话消息。
+
+`handleSend()` 在点击发送时校验输入，并把用户消息追加到列表中。
+
+`value` 和 `onChange` 让输入框受 React 状态控制。
+
+---
+
+## 🌐 浏览器表现
+
+运行组件后，页面会显示标题、说明文字、消息列表、Prompt 输入框和发送按钮。
+
+输入内容并点击发送后，新消息会追加到列表中，底部统计文本也会更新。这个过程体现了 React 用状态驱动界面更新的基本方式。
+
+---
+
+## 📦 常见属性 / API
+
+| 属性/API | 类型 | 说明 | 示例 |
+|---------|------|------|------|
+| `function useStream()` | React 写法 | 本节核心入口 | `function useStream()` |
+| `props` | React 数据 | 父组件传给子组件的数据 | `<Message item={message} />` |
+| `state` | React 状态 | 组件内部会变化的数据 | `useState([])` |
+| `JSX` | 语法扩展 | 在 JS 中描述 UI | `<section />` |
+| `onClick` | 事件属性 | 监听点击事件 | `onClick={handleSend}` |
+| `key` | React 属性 | 帮助 React 识别列表项 | `key={message.id}` |
+
+---
+
+## ⭐⭐⭐⭐⭐ 必学重点
+
+- React 组件应该围绕数据流组织，而不是围绕 DOM 操作组织。
+- AI Chat 的核心状态包括 Prompt、messages、selectedModel、isStreaming 和 error。
+- useStream 要放到真实交互流程中理解，才能避免只会写示例不会做项目。
+
+---
+
+## ⚠️ 易错点
+
+- 易错点1：直接修改数组或对象状态。正确写法：创建新数组或新对象后更新。
+- 易错点2：把所有逻辑写在一个巨大组件里。正确写法：按组件、Hook、API 层拆分。
+- 易错点3：忽略 loading、error 和空状态。正确写法：AI 请求链路必须覆盖完整状态。
+
+---
+
+## 💡 最佳实践
+
+- 组件只保留自己真正需要的状态。
+- 与 AI 接口相关的请求逻辑优先封装到 Hook 或 API 层。
+- 长消息列表、流式输出和代码高亮要尽早考虑性能边界。
+
+---
+
+## 🚀 AI 应用场景
+
+处理 SSE 或 ReadableStream token。下面的片段展示如何把本节知识落到 AI Chat 数据流中：
+
+```jsx
+const chatTask = {
+  topic: "useStream",
+  syntax: "function useStream()",
+  scene: "处理 SSE 或 ReadableStream token"
+};
+
+console.log(chatTask);
+```
+
+---
+
+## 📝 练习题
+
+1. [基础题] 写一个最小 React 组件，页面中显示“学习 useStream”。
+2. [进阶题] 把本节示例拆成 `MessageList` 和 `PromptInput` 两个组件。
+3. [AI 场景题] 在 AI Chat 页面中使用 useStream 完成一次 Prompt 输入、发送或渲染流程。
+
+---
+
+## 📌 本节总结
+
+| 知识点 | 一句话总结 |
+|--------|-----------|
+| useStream | 封装流式读取和增量更新 |
+| React 数据流 | 状态变化驱动组件重新渲染 |
+| AI Chat | Prompt、消息、模型和请求状态共同组成核心界面 |
+| 学习重点 | 把语法放进真实交互链路中理解 |

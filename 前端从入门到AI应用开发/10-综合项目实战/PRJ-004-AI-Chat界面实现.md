@@ -1,0 +1,190 @@
+# AI-Chat界面实现（PRJ-004）
+
+## 🎯 本节学习目标
+
+- 实现 Prompt 输入、消息列表、模型选择和错误状态。
+- 理解它在完整 AI 应用从 0 到 1 中的位置。
+- 能够产出可执行的代码、配置、检查清单或交付物。
+
+---
+
+## 📖 什么是AI-Chat界面实现
+
+AI-Chat界面实现 是综合项目实战中的一个关键阶段。前面模块分别学习了 HTML、CSS、JavaScript、浏览器、React、TypeScript、工程化、AI Web 和 MCP，本模块要把这些能力串成一个可交付应用。
+
+综合项目不追求堆功能，而是追求完整闭环：用户能完成真实任务，系统有清晰架构，关键风险被控制，后续还能持续维护。
+
+本节围绕“AI 知识库助手”展开，它可以对话、检索知识库、调用工具，并具备基本工程化交付能力。
+
+---
+
+## 🧠 原理讲解
+
+完整 AI 应用可以拆成这条主线：
+
+```text
+需求定义
+  ↓
+架构与工程初始化
+  ↓
+AI Chat 核心体验
+  ↓
+RAG / MCP 能力增强
+  ↓
+测试、部署、监控和复盘
+```
+
+本节核心交付物：
+
+```text
+ChatPage
+```
+
+每一步都要有明确输入、输出和验收标准，避免项目停留在演示 Demo。
+
+---
+
+## 🏗 基本结构
+
+```ts
+type ProjectMilestone = {
+  name: string;
+  goal: string;
+  status: "todo" | "doing" | "done";
+};
+```
+
+---
+
+## ✅ 完整代码
+
+下面用一个项目里程碑结构演示 AI-Chat界面实现 的交付拆解方式：
+
+```ts
+type ProjectTask = {
+  id: string;
+  title: string;
+  owner: "frontend" | "backend" | "ai" | "ops";
+  status: "todo" | "doing" | "done";
+};
+
+type ProjectMilestone = {
+  name: string;
+  goal: string;
+  tasks: ProjectTask[];
+};
+
+const milestone: ProjectMilestone = {
+  name: "AI-Chat界面实现",
+  goal: "完成用户能直接对话的第一版界面",
+  tasks: [
+    { id: "t1", title: "明确输入输出", owner: "frontend", status: "done" },
+    { id: "t2", title: "实现核心链路", owner: "ai", status: "doing" },
+    { id: "t3", title: "补充质量门禁", owner: "ops", status: "todo" }
+  ]
+};
+
+function summarizeMilestone(item: ProjectMilestone): string {
+  const doneCount = item.tasks.filter((task) => task.status === "done").length;
+  return `${item.name}：${doneCount}/${item.tasks.length} 已完成，核心方法是 ChatPage`;
+}
+
+console.log(summarizeMilestone(milestone));
+```
+
+---
+
+## 🔍 逐行解析
+
+`type ProjectTask` 定义单个项目任务的结构。
+
+`owner` 标识任务主要归属，便于拆分前端、后端、AI 和运维工作。
+
+`status` 用固定状态管理任务进度。
+
+`type ProjectMilestone` 定义一个阶段性里程碑。
+
+`milestone` 记录本节对应阶段的目标和任务。
+
+`summarizeMilestone()` 汇总当前阶段完成情况。
+
+`console.log(...)` 输出可读的项目状态摘要。
+
+---
+
+## 🌐 浏览器表现
+
+在真实项目中，本节产出的代码或配置会体现在 AI 应用的页面、请求链路、交互状态或部署结果上。
+
+如果把里程碑数据渲染到后台页面中，团队可以看到每个阶段的任务状态、风险和下一步动作。
+
+---
+
+## 📦 常见属性 / API
+
+| 属性/API | 类型 | 说明 | 示例 |
+|---------|------|------|------|
+| `ChatPage` | 项目交付物 | 本节核心产出 | `ChatPage` |
+| `ProjectTask` | 类型 | 描述单个任务 | `{ id, title, status }` |
+| `ProjectMilestone` | 类型 | 描述阶段目标 | `{ name, goal, tasks }` |
+| `status` | 字段 | 表示任务进度 | `todo / doing / done` |
+| `owner` | 字段 | 标识任务责任域 | `frontend / ai / ops` |
+| `checklist` | 方法 | 用清单保证交付质量 | 发布前检查 |
+
+---
+
+## ⭐⭐⭐⭐⭐ 必学重点
+
+- 综合项目要按阶段交付，每个阶段都要有验收标准。
+- AI 应用必须同时考虑体验、数据、模型、安全、成本和工程化。
+- AI-Chat界面实现 不是孤立任务，它会影响后续实现和维护成本。
+
+---
+
+## ⚠️ 易错点
+
+- 易错点1：一开始就堆功能。正确做法：先定义 MVP 和验收标准。
+- 易错点2：只做前端界面，不控制后端代理和密钥边界。正确做法：架构中明确安全边界。
+- 易错点3：没有测试和复盘。正确做法：核心链路进入自动化检查，项目结束沉淀经验。
+
+---
+
+## 💡 最佳实践
+
+- 每个阶段都保留一份检查清单。
+- 对 AI 功能同时记录成功路径、失败路径和降级方案。
+- 把项目交付物沉淀成可复用模板，服务下一次 AI 应用开发。
+
+---
+
+## 🚀 AI 应用场景
+
+完成用户能直接对话的第一版界面。
+
+```ts
+const aiProjectStage = {
+  stage: "AI-Chat界面实现",
+  deliverable: "ChatPage",
+  aiScenario: "完成用户能直接对话的第一版界面",
+  reviewRequired: true
+};
+```
+
+---
+
+## 📝 练习题
+
+1. [基础题] 为本节阶段写出 3 个具体任务和验收标准。
+2. [进阶题] 把本节任务拆成前端、后端、AI 和工程化四类。
+3. [AI 场景题] 基于 AI-Chat界面实现，为“AI 知识库助手”补充一份可执行检查清单。
+
+---
+
+## 📌 本节总结
+
+| 知识点 | 一句话总结 |
+|--------|-----------|
+| AI-Chat界面实现 | 实现 Prompt 输入、消息列表、模型选择和错误状态 |
+| 综合项目 | 把前面模块能力串成可交付应用 |
+| AI 应用闭环 | 需求、架构、实现、测试、部署和复盘缺一不可 |
+| 交付标准 | 每一阶段都要有可验证产物 |
